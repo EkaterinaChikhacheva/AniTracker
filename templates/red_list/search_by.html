@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="continer" id = 'Red-List-API-results'>
+    
+    <!-- pages -->
+        <form id = 'pages'>
+            <button class="btn btn-danger" type="submit" value="0">1</button>
+            <button class="btn btn-danger" type="submit" value="1">2</button>
+            <button class="btn btn-danger" type="submit" value="2">3</button>
+            <button class="btn btn-danger" type="submit" value="3">4</button>
+        </form>
+
+<!-- RL species will go here -->
+<div class="row">    
+        <div id="family_name">
+            Families
+            <ul id="species" class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                SPECIES
+            </ul>
+</div>
+</div>
+</div>
+
+{% endblock %}

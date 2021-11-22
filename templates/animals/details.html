@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+Name: {% if res.main_common_name == None %}
+    {{res.scientific_name}}
+        {% else %}
+    {{res.main_common_name}}
+        {%endif%}
+    
+    
+<br>
+Category: {{res.category}}
+<br>
+IMG
+<br>
+{{narrative_data.result[0].rationale}}
+
+{% endblock %}
