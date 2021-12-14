@@ -11,7 +11,7 @@ let BASE_URL = 'http://apiv3.iucnredlist.org'
 
 async function getAllSpecies(pageNum) {
     let response = await axios.get(`${BASE_URL}/api/v3/species/page/${pageNum}?token=${TOKEN}`);
-    // console.log("got", response.data.result);
+    console.log("got", response);
 
     return response.data.result;
   }

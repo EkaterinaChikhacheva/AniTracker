@@ -79,6 +79,168 @@ class User(db.Model):
 
         return False
 
+
+# class Favorite(db.Model):
+#     """Storing user's liked animals' ids"""
+
+#     __tablename__ = 'favorites' 
+
+#     id = db.Column(
+#         db.Integer,
+#         primary_key=True
+#     )
+
+#     user_id = db.Column(
+#         db.Integer,
+#         db.ForeignKey('users.id', ondelete='cascade')
+#     )
+
+#     species_name = db.Column(
+#         db.Text,
+#         nullable=False,
+#         unique=True,
+#     )
+
+
+class Animal(db.Model):
+    """imported data from the Red List"""
+
+    __tablename__ = 'animals'
+
+    id = db.Column(
+        db.Integer,
+        primary_key=True
+    )
+
+    family_name = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    scientific_name  = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    main_common_name = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    category = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    taxonomicnotes = db.Column(
+        db.Text,
+        nullable=True
+    )
+
+    # # Can get list of contry objects from dept with .contries
+    countries = db.relationship('Country',
+                               secondary='animals_countries',
+                               backref='animal')
+    # direct navigation: emp -> employeeproject & back
+    # countries = db.relationship('AnimalCountry',
+    #                               backref='animal')
+
+    @classmethod
+    def update_db(cls, family_name, scientific_name, main_common_name, category, taxonomicnotes):
+        """adds an animal to the db
+        """
+
+        animal = Animal(
+            family_name=family_name,
+            scientific_name=scientific_name,
+            main_common_name=main_common_name,
+            category=category,
+            taxonomicnotes=taxonomicnotes
+        )
+
+        db.session.add(animal)
+        return animal
+
+
+    
+
+
+    @classmethod
+    def update_db(cls, country_code, country_name, species_name):
+        """adds an animal to the db
+        """
+
+        country = AnimalCountry(
+            country_code=country_code,
+            country_name=country_name,
+            species_name=species_name
+        )
+
+        db.session.add(country)
+        return country
+
+
+
+class Country(db.Model):
+    """List of countries"""
+    # Can get list of animal objects from dept with .animals
+
+    __tablename__ = 'countries'
+
+
+
+    country_code = db.Column(
+        db.Text,
+        primary_key = True
+    )
+
+    county_name = db.Column(
+        db.Text,
+        nullable=False
+    )
+
+    animals = db.relationship('Animal',
+                               secondary='animals_countries',
+                               backref='country')
+
+    @classmethod
+    def update_db(cls, country_code, country_name):
+        """adds an animal to the db
+        """
+
+        country = Country(
+            country_code=country_code,
+            country_name=country_name,
+        )
+
+        db.session.add(country)
+        return country
+
+
+
+
+class AnimalCountry(db.Model):
+    """RL animals by countries"""
+
+
+    __tablename__ = 'animals_countries'
+
+    country_code = db.Column(
+        db.Text,
+        db.ForeignKey('countries.country_code'),
+        primary_key=True
+    )
+
+
+    animal_id = db.Column(
+        db.Integer,
+        db.ForeignKey('animals.id'),
+        primary_key=True
+    )
+
+
+
+    
 def connect_db(app):
     """Connect this database to provided Flask app.
 
