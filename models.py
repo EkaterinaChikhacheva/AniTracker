@@ -194,7 +194,7 @@ class Country(db.Model):
         primary_key = True
     )
 
-    county_name = db.Column(
+    country_name = db.Column(
         db.Text,
         nullable=False
     )

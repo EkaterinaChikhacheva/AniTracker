@@ -7,7 +7,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm
-from models import db,  connect_db, User, Animal, AnimalCountry
+from models import db,  connect_db, User, Animal, Country, AnimalCountry
 # from helper import how_many_pages_RL
 
 #API
@@ -165,18 +165,17 @@ def send_api_req():
 @app.route('/animals/update')
 def update_db():
     """get the info from RL API and add to the db"""
-    # how many pages?
-    # res = requests.get(f'{RED_LIST_URL}/api/v3/species/page/0?token={TOKEN}')
-    res_countries = requests.get(f'{RED_LIST_URL}/api/v3/country/list?token={TOKEN}')
-    res_countries = res_countries.json()['results']
 
-    for country in res_countries:
 
-        db_country = AnimalCountry.update_db(
-            country_code=country.isocode,
-            country_name=country.country,
-        ######### Another request?##############
-        )
+    #first  add the counties
+    # res_countries = requests.get(f'{RED_LIST_URL}/api/v3/country/list?token={TOKEN}')
+    # res_countries = res_countries.json()['results']
+
+    # for country in res_countries:
+    #     json_country = country
+    #     country_to_db = Country.update_db(json_country['isocode'], 
+    #                                       json_country['country'])
+    #     db.session.commit()
         
     return render_template('animals/update.html', res = res_countries)
 
