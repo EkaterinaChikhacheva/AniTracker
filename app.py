@@ -174,15 +174,26 @@ def load_countries():
             
     return render_template('animals/update.html', res = res_countries)
 
-@app.route('/animals/update')
-def update_db():
-    """get the info from RL API and add to the db"""
 
 
-    #first  add the counties
-   
+
+@app.route('/animals/add_animals_to_db/<int:pg_num>')
+def update_db(pg_num):
+    """get animals from RL API and add to the db"""
+    res_animals = requests.get(f'{RED_LIST_URL}/api/v3/species/page/{pg_num}?token={TOKEN}')
+    res_animals = res_animals.json()['result']
+
+    for animal in res_animals:
+        animal_to_db = Animal.update_db(animal['family_name'], 
+                                        animal['scientific_name'],
+                                        animal['main_common_name'],
+                                        animal['category'])
+        db.session.commit()
         
-    return render_template('animals/update.html', res = res)
+    return render_template('animals/update.html', res = res_animals)
+
+
+
 
 @app.route('/animals/<species_name>')
 def show_animal_details(species_name):
