@@ -1,6 +1,7 @@
 import os
 import requests
 import json
+import urllib.parse
 
 from flask import Flask, request, render_template,  redirect, flash, session, g, abort
 from flask_debugtoolbar import DebugToolbarExtension
@@ -160,19 +161,7 @@ def send_api_req():
 ################################################################################
 #Animals routes
 
-@app.route('/animals/add_countries_to_db')
-def load_countries():
-    """This route exists solemly for adding a list of countries to my db"""
-    res_countries = requests.get(f'{RED_LIST_URL}/api/v3/country/list?token={TOKEN}')
-    res_countries = res_countries.json()['results']
 
-    for country in res_countries:
-        json_country = country
-        country_to_db = Country.update_db(json_country['isocode'], 
-                                          json_country['country'])
-        db.session.commit()
-            
-    return render_template('animals/update.html', res = res_countries)
 
 @app.route('/animals/update')
 def update_db():
@@ -180,9 +169,31 @@ def update_db():
 
 
     #first  add the counties
-   
+    # res_countries = requests.get(f'{RED_LIST_URL}/api/v3/country/list?token={TOKEN}')
+    # res_countries = res_countries.json()['results']
+
+    # for country in res_countries:
+    #     json_country = country
+    #     country_to_db = Country.update_db(json_country['isocode'], 
+    #                                       json_country['country'])
+    #     db.session.commit()
+    res_animals = requests.get(f'{RED_LIST_URL}/api/v3/species/page/17?token={TOKEN}')
+    res_animals = res_animals.json()['result']
+
+    for animal in res_animals:
+        # species_name = animal['scientific_name'].replace(' ', '%20')
+        # res_taxonomicnotes = requests.get(f'{RED_LIST_URL}/api/v3/species/narrative/{species_name}?token={TOKEN}')
+        # res_taxonomicnotes = res_taxonomicnotes.json()['result']
+        animal_to_db = Animal.update_db(
+                                        family_name=animal['family_name'],
+                                        scientific_name=animal['scientific_name'],
+                                        main_common_name=animal['main_common_name'],
+                                        category=animal['category'],
+                                        # taxonomicnotes=res_taxonomicnotes[1]
+        )
+        db.session.commit()
         
-    return render_template('animals/update.html', res = res)
+    return render_template('animals/update.html')
 
 @app.route('/animals/<species_name>')
 def show_animal_details(species_name):
@@ -195,7 +206,7 @@ def show_animal_details(species_name):
     return render_template('animals/details.html', narrative_data = narrative_data, res = res.json()['result'][0])
 
 
-@app.route('/animals/<species_name>/track', methods = ['POST'])
+@app.route('/animals/<species_name>/track')
 def add_animal_to_db(species_name):
     """Saving the animal to the db"""
     

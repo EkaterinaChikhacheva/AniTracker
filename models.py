@@ -146,7 +146,7 @@ class Animal(db.Model):
     #                               backref='animal')
 
     @classmethod
-    def update_db(cls, family_name, scientific_name, main_common_name, category, taxonomicnotes):
+    def update_db(cls, family_name, scientific_name, main_common_name, category):
         """adds an animal to the db
         """
 
@@ -155,7 +155,7 @@ class Animal(db.Model):
             scientific_name=scientific_name,
             main_common_name=main_common_name,
             category=category,
-            taxonomicnotes=taxonomicnotes
+            # taxonomicnotes=taxonomicnotes
         )
 
         db.session.add(animal)
@@ -165,20 +165,7 @@ class Animal(db.Model):
     
 
 
-    @classmethod
-    def update_db(cls, country_code, country_name, species_name):
-        """adds an animal to the db
-        """
-
-        country = AnimalCountry(
-            country_code=country_code,
-            country_name=country_name,
-            species_name=species_name
-        )
-
-        db.session.add(country)
-        return country
-
+ 
 
 
 class Country(db.Model):
@@ -237,6 +224,20 @@ class AnimalCountry(db.Model):
         db.ForeignKey('animals.id'),
         primary_key=True
     )
+
+    @classmethod
+    def update_db(cls, country_code, country_name, species_name):
+        """adds an animal to the db
+        """
+
+        animal_country = AnimalCountry(
+            country_code=country_code,
+            country_name=country_name,
+            species_name=species_name
+        )
+
+        db.session.add(animal_country)
+        return animal_country
 
 
 
